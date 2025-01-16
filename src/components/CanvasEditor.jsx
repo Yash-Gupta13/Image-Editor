@@ -168,8 +168,8 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
     >
       Back To Search
     </Button>
-    <div className="container mx-auto flex flex-col md:flex-row gap-4">
-      <div className="w-full md:w-1/2">
+    <div className="mx-auto flex flex-col md:flex-row gap-4">
+      <div className="w-full md:w-1/2 ">
         <canvas
           id="canvas"
           className="border border-gray-400 w-full h-auto"
@@ -205,10 +205,10 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
         </Button>
       </div>
     </div>
-    <div className="flex mt-2 w-full">
+    <div className="flex mt-2 w-1/2">
       <Button
         onClick={downloadCanvas}
-        className="hover:bg-white hover:text-black w-full max-w-sm"
+        className="hover:bg-white hover:text-black w-full"
       >
         Download Image
       </Button>
