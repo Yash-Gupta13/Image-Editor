@@ -16,14 +16,14 @@ const ImageSearch = ({ onSelectImage }) => {
         {
           params: {
             query,
-            client_id: "9RmCTZ0NUCZVbYLzGZHLcnJOoDDCV2l7epEgANp4-ZM",
+            client_id: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
           },
         }
       );
       setImages(response.data.results);
       setNoResultsMessage(
         response.data.results.length === 0
-          ? "No images found. Please try a different search."
+          ? "No images found. Please try a different search term."
           : ""
       );
     } catch (error) {
@@ -36,7 +36,7 @@ const ImageSearch = ({ onSelectImage }) => {
       <div className="flex justify-center gap-2">
         <Input
           type="text"
-          placeholder="Search for images..."
+          placeholder="Enter your search term"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="text-white text-lg w-64 h-12 px-4"
@@ -46,7 +46,7 @@ const ImageSearch = ({ onSelectImage }) => {
         </Button>
       </div>
 
-      <div className="flex flex-wrap justify-center gap-4 mt-4">
+      <div className="flex flex-wrap justify-center gap-12 mt-4">
         {images.length > 0 ? (
           images.map((image) => (
             <Card

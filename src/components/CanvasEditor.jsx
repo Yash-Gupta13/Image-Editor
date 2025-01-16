@@ -4,55 +4,57 @@ import { Button } from "@/components/ui/button";
 
 const CanvasEditor = ({ selectedImage, handleBack }) => {
   const [canvas, setCanvas] = useState(null);
-  const [activeObject, setActiveObject] = useState(null); // Store active object for interactions
   const canvasRef = useRef(null);
 
   useEffect(() => {
     const fabricCanvas = new fabric.Canvas("canvas", {
-      width: 800, // Default width, can be dynamic or responsive
-      height: 600, // Default height, can be dynamic or responsive
+      width: 750, // Canvas width
+      height: 570, // Canvas height
       backgroundColor: "#f3f3f3",
       preserveObjectStacking: true,
     });
     canvasRef.current = fabricCanvas;
     setCanvas(fabricCanvas);
 
-    // Handle object selection
-    fabricCanvas.on("selection:created", handleSelection);
-    fabricCanvas.on("selection:updated", handleSelection);
-
     return () => {
       fabricCanvas.dispose();
-      fabricCanvas.off("selection:created", handleSelection);
-      fabricCanvas.off("selection:updated", handleSelection);
     };
   }, []);
 
   useEffect(() => {
     if (selectedImage && canvas) {
-      fabric.Image.fromURL(selectedImage, (img) => {
-        // Calculate padding (e.g., 20px padding)
-        const padding = 20;
+      const imgElement = new Image();
+      imgElement.crossOrigin = "anonymous";
+      imgElement.src = selectedImage;
 
-        // Adjust image size based on canvas size with padding
+      imgElement.onload = () => {
+        const fabricImage = new fabric.Image(imgElement);
+
+        // Calculate padding
+        const padding = 20;
         const canvasWidth = canvas.getWidth();
         const canvasHeight = canvas.getHeight();
-        const imageWidth = canvasWidth - 2 * padding; // Subtract padding from width
-        const imageHeight = canvasHeight - 2 * padding; // Subtract padding from height
+        const imageWidth = canvasWidth - 2 * padding;
+        const imageHeight = canvasHeight - 2 * padding;
 
-        // Scale the image to fit within the padded canvas area
-        img.set({
-          left: padding, // Set left padding
-          top: padding, // Set top padding
-          scaleX: imageWidth / img.width, // Scale the width based on image's original width
-          scaleY: imageHeight / img.height, // Scale the height based on image's original height
+        fabricImage.set({
+          left: padding,
+          top: padding,
+          scaleX: imageWidth / fabricImage.width,
+          scaleY: imageHeight / fabricImage.height,
           selectable: true,
         });
 
-        canvas.clear(); // Clear the canvas before adding new image
-        canvas.add(img);
+        canvas.clear();
+        canvas.add(fabricImage);
         canvas.renderAll();
-      });
+      };
+
+      imgElement.onerror = () => {
+        console.error(
+          "Failed to load the image. Ensure the URL supports CORS."
+        );
+      };
     }
   }, [selectedImage, canvas]);
 
@@ -62,144 +64,152 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
       left: 100,
       top: 100,
       fontSize: 20,
-      fill: "#000",
+      fill: "#000", // Text color
       editable: true,
+      fontWeight: "bold",
+      fontStyle: "italic",
+      textAlign: "center",
+      backgroundColor: "#f0f0f0",
+      borderColor: "#007bff",
+      cornerColor: "#ff5722",
+      cornerStyle: "circle",
+      padding: 10,
+      shadow: "rgba(0,0,0,0.3) 2px 2px 5px",
     });
+
     canvas.add(text);
     canvas.renderAll();
   };
 
-  // Add Shape to Canvas (Circle, Rectangle, Triangle, etc.)
+  // Add Shapes to Canvas
   const addShape = (type) => {
     let shape;
     switch (type) {
       case "circle":
         shape = new fabric.Circle({
           radius: 50,
-          fill: "blue",
+          fill: "#d5d5de", // Color of the circle
           left: 150,
           top: 150,
-          selectable: true,
+          stroke: "black",
+          cornerStyle: "circle", // Border color
+          strokeWidth: 1, // Border width
         });
         break;
       case "rectangle":
         shape = new fabric.Rect({
           width: 100,
           height: 50,
-          fill: "green",
+          fill: "#d5d5de", // Color of the rectangle
           left: 200,
           top: 200,
-          selectable: true,
+          stroke: "black",
+          cornerStyle: "circle", // Border color
+          strokeWidth: 1, // Border width
         });
         break;
       case "triangle":
         shape = new fabric.Triangle({
           width: 100,
           height: 100,
-          fill: "red",
+          fill: "#d5d5de", // Color of the triangle
           left: 250,
           top: 250,
-          selectable: true,
+          stroke: "black",
+          cornerStyle: "circle", // Border color
+          strokeWidth: 1, // Border width
         });
         break;
-      case "polygon":
+      case "pentagon":
         shape = new fabric.Polygon(
           [
-            { x: 200, y: 200 },
-            { x: 250, y: 100 },
-            { x: 300, y: 200 },
+            { x: 200, y: 100 },
+            { x: 300, y: 100 },
+            { x: 350, y: 200 },
+            { x: 250, y: 300 },
+            { x: 150, y: 200 },
           ],
           {
-            fill: "purple",
-            selectable: true,
+            fill: "#d5d5de", // Color of the polygon
+            stroke: "black",
+            cornerStyle: "circle", // Border color
+            strokeWidth: 1, // Border width
           }
         );
         break;
       default:
         break;
     }
+
     if (shape) {
       canvas.add(shape);
       canvas.renderAll();
     }
   };
 
-  const deleteSelectedObject = () => {
-    if (activeObject) {
-      canvas.remove(activeObject);
-      setActiveObject(null); // Clear the active object reference
-      canvas.renderAll();
+  // Download the Canvas as an Image
+  const downloadCanvas = () => {
+    if (canvas) {
+      const dataURL = canvas.toDataURL({
+        format: "png",
+      });
+      const link = document.createElement("a");
+      link.href = dataURL;
+      link.download = "edited-image.png";
+      link.click();
     }
   };
 
-  // Set active object when a shape or text is selected
-  const handleSelection = (e) => {
-    setActiveObject(e.target);
-  };
-
-  // Remove active object on deselection
-  canvas.on("selection:cleared", () => {
-    setActiveObject(null);
-  });
-
-  const handleBackToSearch = () => {
-    handleBack();
-  };
-
-  const downloadCanvas = () => {
-    const dataURL = canvas.toDataURL({ format: "png" });
-    const link = document.createElement("a");
-    link.href = dataURL;
-    link.download = "edited-image.png";
-    link.click();
-  };
-
   return (
-    <div className="w-full p-4">
-      <div className="flex space-x-4 mb-4">
-        <Button onClick={addText} className="hover:bg-white hover:text-black">
-          Add Caption
-        </Button>
-        <Button
-          onClick={() => addShape("circle")}
-          className="hover:bg-white hover:text-black"
-        >
-          Add Circle
-        </Button>
-        <Button
-          onClick={() => addShape("rectangle")}
-          className="hover:bg-white hover:text-black"
-        >
-          Add Rectangle
-        </Button>
-        <Button
-          onClick={() => addShape("triangle")}
-          className="hover:bg-white hover:text-black"
-        >
-          Add Triangle
-        </Button>
-        <Button
-          onClick={() => addShape("polygon")}
-          className="hover:bg-white hover:text-black"
-        >
-          Add Polygon
-        </Button>
+    <div className="p-2">
+      <Button
+        onClick={handleBack}
+        className="hover:bg-white hover:text-black mb-4 mt-1"
+      >
+        Back To Search
+      </Button>
+      <div className=" container flex h-full w-full">
+        <div className="w-1/2">
+          <canvas id="canvas" className="border border-gray-400 "></canvas>
+        </div>
+        <div className=" py-2 w-1/2 flex gap-2 justify-center items-center">
+          <Button onClick={addText} className="hover:bg-white hover:text-black">
+            Add Caption
+          </Button>
+          <Button
+            onClick={() => addShape("circle")}
+            className="hover:bg-white hover:text-black"
+          >
+            Add Circle
+          </Button>
+          <Button
+            onClick={() => addShape("rectangle")}
+            className="hover:bg-white hover:text-black"
+          >
+            Add Rectangle
+          </Button>
+          <Button
+            onClick={() => addShape("triangle")}
+            className="hover:bg-white hover:text-black"
+          >
+            Add Triangle
+          </Button>
+          <Button
+            onClick={() => addShape("pentagon")}
+            className="hover:bg-white hover:text-black"
+          >
+            Add Pentagon
+          </Button>
+        </div>
+      </div>
+      <div className="flex w-1/2 mt-2">
         <Button
           onClick={downloadCanvas}
-          className="hover:bg-white hover:text-black"
+          className="hover:bg-white hover:text-black w-[49vw]"
         >
           Download Image
         </Button>
-        <Button
-          onClick={deleteSelectedObject}
-          className="hover:bg-white hover:text-black"
-        >
-          Delete
-        </Button>
-        <Button onClick={handleBackToSearch}>Back To Search</Button>
       </div>
-
-      <canvas id="canvas" className="mt-4 border border-gray-400"></canvas>
     </div>
   );
 };

@@ -6,14 +6,16 @@ import CanvasEditor from "./components/CanvasEditor";
 const App = () => {
   const [selectedImage, setSelectedImage] = useState(null);
   const handleBack = () => {
-    setSelectedImage(null); // Update state to null when back button is clicked
+    setSelectedImage(null);
   };
 
   return (
     <div className="bg-black w-full h-full">
-      <Navbar />
       {selectedImage === null ? (
-        <ImageSearch onSelectImage={setSelectedImage} />
+        <>
+          <Navbar />
+          <ImageSearch onSelectImage={setSelectedImage} />
+        </>
       ) : (
         <>
           <CanvasEditor selectedImage={selectedImage} handleBack={handleBack} />
