@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-import { Button } from "@/components/ui/Button";
+import { Button } from "@/components/ui/button";
 
 const CanvasEditor = ({ selectedImage, handleBack }) => {
   const [canvas, setCanvas] = useState(null);
