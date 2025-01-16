@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { fabric } from "fabric";
-import { Button } from "@/components/ui/button";
+import { Button } from "@/components/ui/Button";
 
 const CanvasEditor = ({ selectedImage, handleBack }) => {
   const [canvas, setCanvas] = useState(null);
@@ -162,55 +162,58 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
 
   return (
     <div className="p-2">
-      <Button
-        onClick={handleBack}
-        className="hover:bg-white hover:text-black mb-4 mt-1"
-      >
-        Back To Search
-      </Button>
-      <div className=" container flex h-full w-full">
-        <div className="w-1/2">
-          <canvas id="canvas" className="border border-gray-400 "></canvas>
-        </div>
-        <div className=" py-2 w-1/2 flex gap-2 justify-center items-center">
-          <Button onClick={addText} className="hover:bg-white hover:text-black">
-            Add Caption
-          </Button>
-          <Button
-            onClick={() => addShape("circle")}
-            className="hover:bg-white hover:text-black"
-          >
-            Add Circle
-          </Button>
-          <Button
-            onClick={() => addShape("rectangle")}
-            className="hover:bg-white hover:text-black"
-          >
-            Add Rectangle
-          </Button>
-          <Button
-            onClick={() => addShape("triangle")}
-            className="hover:bg-white hover:text-black"
-          >
-            Add Triangle
-          </Button>
-          <Button
-            onClick={() => addShape("pentagon")}
-            className="hover:bg-white hover:text-black"
-          >
-            Add Pentagon
-          </Button>
-        </div>
+    <Button
+      onClick={handleBack}
+      className="hover:bg-white hover:text-black mb-4 mt-1"
+    >
+      Back To Search
+    </Button>
+    <div className="container mx-auto flex flex-col md:flex-row gap-4">
+      <div className="w-full md:w-1/2">
+        <canvas
+          id="canvas"
+          className="border border-gray-400 w-full h-auto"
+        ></canvas>
       </div>
-      <div className="flex w-1/2 mt-2">
+      <div className="py-2 w-full md:w-1/2 flex flex-wrap gap-2 justify-center items-center">
+        <Button onClick={addText} className="hover:bg-white hover:text-black">
+          Add Caption
+        </Button>
         <Button
-          onClick={downloadCanvas}
-          className="hover:bg-white hover:text-black w-[49vw]"
+          onClick={() => addShape("circle")}
+          className="hover:bg-white hover:text-black"
         >
-          Download Image
+          Add Circle
+        </Button>
+        <Button
+          onClick={() => addShape("rectangle")}
+          className="hover:bg-white hover:text-black"
+        >
+          Add Rectangle
+        </Button>
+        <Button
+          onClick={() => addShape("triangle")}
+          className="hover:bg-white hover:text-black"
+        >
+          Add Triangle
+        </Button>
+        <Button
+          onClick={() => addShape("pentagon")}
+          className="hover:bg-white hover:text-black"
+        >
+          Add Pentagon
         </Button>
       </div>
     </div>
+    <div className="flex mt-2 w-full">
+      <Button
+        onClick={downloadCanvas}
+        className="hover:bg-white hover:text-black w-full max-w-sm"
+      >
+        Download Image
+      </Button>
+    </div>
+  </div>
   );
 };
 
