@@ -11,12 +11,13 @@ const ImageSearch = ({ onSelectImage }) => {
 
   const fetchImages = async () => {
     try {
+      // in codesandbox .env features is not avialble 
       const response = await axios.get(
         `https://api.unsplash.com/search/photos`,
         {
           params: {
             query,
-            client_id: import.meta.env.VITE_UNSPLASH_ACCESS_KEY,
+            client_id: "9RmCTZ0NUCZVbYLzGZHLcnJOoDDCV2l7epEgANp4-ZM",
           },
         }
       );
