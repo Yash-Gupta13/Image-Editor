@@ -8,8 +8,11 @@ const ImageSearch = ({ onSelectImage }) => {
   const [query, setQuery] = useState("");
   const [images, setImages] = useState([]);
   const [noResultsMessage, setNoResultsMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState(""); // New state for API error message
 
   const fetchImages = async () => {
+    setErrorMessage(""); // Reset the error message before the request
+    setNoResultsMessage(""); // Reset no-results message
     try {
       const response = await axios.get(
         `https://api.unsplash.com/search/photos`,
@@ -28,6 +31,11 @@ const ImageSearch = ({ onSelectImage }) => {
       );
     } catch (error) {
       console.error("Error fetching images:", error);
+      setErrorMessage(
+        error.response?.data?.errors?.[0] ||
+        error.response?.statusText ||
+        "An error occurred. Please try again later."
+      );
     }
   };
 
@@ -45,6 +53,13 @@ const ImageSearch = ({ onSelectImage }) => {
           Search
         </Button>
       </div>
+
+      {/* Display API error message */}
+      {errorMessage && (
+        <div className="text-red-500 text-center mt-4">
+          <p>{errorMessage}</p>
+        </div>
+      )}
 
       <div className="flex flex-wrap justify-center gap-12 mt-4">
         {images.length > 0 ? (
@@ -67,7 +82,9 @@ const ImageSearch = ({ onSelectImage }) => {
             </Card>
           ))
         ) : (
-          <p className="text-white text-center">{noResultsMessage}</p>
+          !errorMessage && (
+            <p className="text-white text-center">{noResultsMessage}</p>
+          )
         )}
       </div>
     </div>
