@@ -164,18 +164,11 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
     <div className="p-2">
     <Button
       onClick={handleBack}
-      className="hover:bg-white hover:text-black mb-4 mt-1"
+      className="hover:bg-white hover:text-black mt-1"
     >
       Back To Search
     </Button>
-    <div className="mx-auto flex flex-col md:flex-row gap-4">
-      <div className="w-full md:w-1/2 ">
-        <canvas
-          id="canvas"
-          className="border border-gray-400 w-full h-auto"
-        ></canvas>
-      </div>
-      <div className="py-2 w-full md:w-1/2 flex flex-wrap gap-2 justify-center items-center">
+    <div className="py-2 w-full md:w-1/2 flex flex-wrap gap-2 items-center">
         <Button onClick={addText} className="hover:bg-white hover:text-black">
           Add Caption
         </Button>
@@ -203,15 +196,21 @@ const CanvasEditor = ({ selectedImage, handleBack }) => {
         >
           Add Pentagon
         </Button>
-      </div>
-    </div>
-    <div className="flex mt-2 w-1/2">
-      <Button
+        <Button
         onClick={downloadCanvas}
-        className="hover:bg-white hover:text-black w-full"
+        className="hover:bg-white hover:text-black "
       >
         Download Image
       </Button>
+      </div>
+    <div className="mx-auto flex flex-col md:flex-row gap-4">
+      <div className="w-full md:w-1/2 ">
+        <canvas
+          id="canvas"
+          className="border border-gray-400 w-full h-auto"
+        ></canvas>
+      </div>
+      
     </div>
   </div>
   );
